@@ -41,7 +41,7 @@ O dev.finances é uma aplicação simples para treinar o HTML, CSS e JavaScript,
 
 ## 🔖 Layout
 
-Eles criaram um layout no Figma que você pode verificar através[desse link](https://www.figma.com/file/7Vu9DzUaCZIV4nibzkjgB4/dev.finance%24-Maratona-Discover). É necessário ter conta no [Figma](https://figma.com) para acessá-lo.
+Eles criaram um layout no Figma que você pode verificar através [desse link](https://www.figma.com/file/7Vu9DzUaCZIV4nibzkjgB4/dev.finance%24-Maratona-Discover). É necessário ter conta no [Figma](https://figma.com) para acessá-lo.
 
 ## :memo: Licença
 
