@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img alt="Logo do dev.finance$" title="Disk-Pizza" src=".github/logo.svg" width="220px" />
+  <img alt="Logo do dev.finance$" title="dev.finance$" src=".github/logo.svg" width="220px" />
 </h1>
 
 <p align="center">
@@ -10,15 +10,15 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/cleysonsilvame/disk-pizza/commits/master">
-    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/cleysonsilvame/disk-pizza.svg">
+  <a href="https://github.com/cleysonsilvame/maratona-discover/commits/master">
+    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/cleysonsilvame/maratona-discover.svg">
   </a>
 
-  <a href="https://github.com/cleysonsilvame/disk-pizza/issues">
-    <img alt="Repository issues" src="https://img.shields.io/github/issues/cleysonsilvame/disk-pizza.svg">
+  <a href="https://github.com/cleysonsilvame/maratona-discover/issues">
+    <img alt="Repository issues" src="https://img.shields.io/github/issues/cleysonsilvame/maratona-discover.svg">
   </a>
 
-  <img alt="GitHub" src="https://img.shields.io/github/license/cleysonsilvame/disk-pizza.svg">
+  <img alt="GitHub" src="https://img.shields.io/github/license/cleysonsilvame/maratona-discover.svg">
 </p>
 
 
