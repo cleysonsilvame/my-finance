@@ -2,13 +2,9 @@ version: "3"
 services:
   web:
     build: .
+    entrypoint: sh -c 'yarn && yarn dev'
     restart: always
-    volumes:
-      - ./:/app
-      - node_modules:/app/node_modules
-      - next:/app/.next
     ports:
       - 3000:3000
-volumes:
-  node_modules: {}
-  next: {}
+    volumes:
+      - ./:/home/node/app
