@@ -1,15 +1,113 @@
-import Head from "next/head";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { App } from "../scripts";
-import styles from "../styles/Home.module.css";
+import styles from "./index.module.css";
 
 export default function Home() {
-  const [app, setApp] = useState(null);
+  const [modal, setModal] = useState(false);
+
+  const [transactions, setTransactions] = useState([]);
+
+  const [description, setDescription] = useState("");
+  const [amount, setAmount] = useState("");
+  const [date, setDate] = useState("");
+
+  const Transaction = {
+    add(transaction) {
+      setTransactions([...transactions, transaction]);
+    },
+    remove(index) {
+      transactions.splice(index, 1);
+      setTransactions([...transactions]);
+    },
+    incomes() {
+      let income = 0;
+      transactions.forEach(transaction => {
+        if (transaction.amount > 0) {
+          income += transaction.amount;
+        }
+      });
+      return income;
+    },
+    expenses() {
+      let expense = 0;
+      transactions.forEach(transaction => {
+        if (transaction.amount < 0) {
+          expense += transaction.amount;
+        }
+      });
+      return expense;
+    },
+    total() {
+      return Transaction.incomes() + Transaction.expenses();
+    },
+  };
+
+  const formatDate = date => {
+    const splittedDate = date.split("-");
+    return splittedDate.reverse().join("/");
+  };
+
+  const formatCurrency = value => {
+    const signal = Number(value) < 0 ? "-" : "";
+
+    value = String(value).replace(/\D/g, "");
+
+    value = Number(value) / 100;
+
+    value = value.toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    });
+
+    return signal + value;
+  };
+
+  const formatValues = () => {
+    return {
+      description,
+      amount: Math.round(amount * 100),
+      date: formatDate(date),
+    };
+  };
+
+  const validateFields = () => {
+    if (!(description.trim() && amount.trim() && date.trim())) {
+      throw new Error("Por favor, preencha todos os campos");
+    }
+  };
+
+  const clearFields = () => {
+    setDescription("");
+    setAmount("");
+    setDate("");
+  };
+
+  const handleOnSubmit = event => {
+    event.preventDefault();
+    try {
+      validateFields();
+      const transaction = formatValues();
+      Transaction.add(transaction);
+
+      clearFields();
+      setModal(false);
+    } catch (error) {
+      alert(error.message);
+    }
+  };
 
   useEffect(() => {
-    setApp(App.init());
+    setTransactions(
+      JSON.parse(localStorage.getItem("dev.finances:transactions")) || []
+    );
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "dev.finances:transactions",
+      JSON.stringify(transactions)
+    );
+  }, [transactions]);
 
   return (
     <div className={styles.container}>
@@ -35,7 +133,7 @@ export default function Home() {
                 height="32"
               />
             </h3>
-            <p id="incomeDisplay">R$ 0,00</p>
+            <p id="incomeDisplay">{formatCurrency(Transaction.incomes())}</p>
           </div>
           <div className="card">
             <h3>
@@ -47,7 +145,7 @@ export default function Home() {
                 height="32"
               />
             </h3>
-            <p id="expenseDisplay">R$ 0,00</p>
+            <p id="expenseDisplay">{formatCurrency(Transaction.expenses())}</p>
           </div>
           <div className="card total">
             <h3>
@@ -59,15 +157,15 @@ export default function Home() {
                 height="32"
               />
             </h3>
-            <p id="totalDisplay">R$ 0,00</p>
+            <p id="totalDisplay">{formatCurrency(Transaction.total())}</p>
           </div>
         </section>
 
         <section id="transaction">
           <h2 className="sr-only">Transações</h2>
-          <a onClick={() => app.Modal.open()} className="button new">
+          <button onClick={() => setModal(true)} className="button new">
             + Nova Transação
-          </a>
+          </button>
           <table id="data-table">
             <thead>
               <tr>
@@ -77,16 +175,35 @@ export default function Home() {
                 <th></th>
               </tr>
             </thead>
-            <tbody></tbody>
+            <tbody>
+              {transactions.map((transaction, index) => (
+                <tr key={index}>
+                  <td className="description">{transaction.description}</td>
+                  <td className={transaction.amount > 0 ? "income" : "expense"}>
+                    {formatCurrency(transaction.amount)}
+                  </td>
+                  <td className="date">{transaction.date}</td>
+                  <td>
+                    <Image
+                      onClick={() => Transaction.remove(index)}
+                      src="/assets/minus.svg"
+                      alt="Remover Transação"
+                      width="28"
+                      height="28"
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
           </table>
         </section>
       </main>
 
-      <div className="modal-overlay">
+      <div className={`modal-overlay ${modal ? "active" : ""}`}>
         <div className="modal">
           <div id="form">
             <h2>Nova Transação</h2>
-            <form onSubmit={event => app.Form.submit(event)}>
+            <form onSubmit={handleOnSubmit}>
               <div className="input-group">
                 <label className="sr-only" htmlFor="description">
                   Descrição
@@ -96,6 +213,8 @@ export default function Home() {
                   id="description"
                   name="description"
                   placeholder="Descrição"
+                  value={description}
+                  onChange={event => setDescription(event.target.value)}
                 />
               </div>
               <div className="input-group">
@@ -108,6 +227,8 @@ export default function Home() {
                   step="0.01"
                   name="amount"
                   placeholder="0,00"
+                  value={amount}
+                  onChange={event => setAmount(event.target.value)}
                 />
                 <small className="help">
                   Use o sinal - (negativo) para despesas e, (vírgula) para casas
@@ -118,17 +239,24 @@ export default function Home() {
                 <label className="sr-only" htmlFor="date">
                   Data
                 </label>
-                <input type="date" id="date" name="date" />
+                <input
+                  type="date"
+                  id="date"
+                  name="date"
+                  value={date}
+                  defaultValue={new Date().toLocaleDateString()}
+                  onChange={event => setDate(event.target.value)}
+                />
               </div>
               <div className="input-group actions">
-                <a
-                  href="#"
+                <button
+                  type="reset"
                   className="button cancel"
-                  onClick={() => app.Modal.close()}
+                  onClick={() => setModal(false)}
                 >
                   Cancelar
-                </a>
-                <button>Salvar</button>
+                </button>
+                <button type="submit">Salvar</button>
               </div>
             </form>
           </div>
