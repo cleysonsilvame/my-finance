@@ -2,9 +2,22 @@ version: "3"
 services:
   web:
     build: .
-    entrypoint: sh -c 'yarn && yarn dev'
-    restart: always
-    ports:
-      - 3000:3000
     volumes:
       - ./:/home/node/app
+      - nodemodules:/home/node/app/node_modules
+      - next:/app/.next
+    ports:
+      - 3000:3000
+volumes:
+  nodemodules:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./node_modules
+  next:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./.next
