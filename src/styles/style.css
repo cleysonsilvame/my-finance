@@ -57,7 +57,7 @@ a:hover {
   color: var(--light-green);
 }
 
-button {
+button[type="submit"] {
   width: 100%;
   height: 50px;
   border: none;
@@ -70,7 +70,7 @@ button {
   cursor: pointer;
 }
 
-button:hover {
+button[type="submit"]:hover {
   background: var(--light-green);
 }
 
